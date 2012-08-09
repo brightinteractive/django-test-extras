@@ -72,8 +72,8 @@ class Command(CoreCommand):
             if not options['no_exclude']:
                 exclusions = options.get('exclude_tags') or ','.join(
                     getattr(settings, 'TEST_EXCLUDE_TAGS'))
-            TestRunner = self.tag_wrap(TestRunner, options.get('tags') or '',
-                                       exclusions or '')
+            TestRunner = self.tag_wrap(TestRunner, options.get('tags'),
+                                       exclusions)
 
         if options['xmlreports']:
             TestRunner = self.xml_wrap(TestRunner)
@@ -120,8 +120,8 @@ class Command(CoreCommand):
 
     def tag_wrap(self, Runner, test_tags, test_exclude_tags):
         class TagTestRunner(TagTestSuiteMixin, Runner):
-            tags = test_tags.split(',')
-            exclude_tags = test_exclude_tags.split(',')
+            tags = test_tags.split(',') if test_tags else []
+            exclude_tags = test_exclude_tags.split(',') if test_exclude_tags else []
         return TagTestRunner
 
     def _core_handle(self, TestRunner, *test_labels, **options):

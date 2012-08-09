@@ -172,7 +172,7 @@ class TagTestSuiteMixin(object):
             if hasattr(test, '__iter__'):
                 suite.addTest(self.filter_by_tag(test))
             else:
-                if any(tags_in(test, self.tags)):
+                if any(tags_in(test, self.tags)) or not self.tags:
                     if not any(tags_in(test, self.exclude_tags)):
                         suite.addTest(test)
         return suite
