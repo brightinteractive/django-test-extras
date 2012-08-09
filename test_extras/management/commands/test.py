@@ -71,7 +71,7 @@ class Command(CoreCommand):
             exclusions = None
             if not options['no_exclude']:
                 exclusions = options.get('exclude_tags') or ','.join(
-                    getattr(settings, 'TEST_EXCLUDE_TAGS'))
+                    getattr(settings, 'TEST_EXCLUDE_TAGS'), [])
             TestRunner = self.tag_wrap(TestRunner, options.get('tags'),
                                        exclusions)
 
