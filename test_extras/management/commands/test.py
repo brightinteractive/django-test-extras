@@ -67,7 +67,7 @@ class Command(CoreCommand):
         if options['pdb']:
             TestRunner = self.pdb_wrap(TestRunner)
 
-        if options['tags'] or options['exclude_tags']:
+        if options['tags'] or options['exclude_tags'] or getattr(settings, 'TEST_EXCLUDE_TAGS'):
             exclusions = None
             if not options['no_exclude']:
                 exclusions = options.get('exclude_tags') or ','.join(
