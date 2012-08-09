@@ -38,8 +38,19 @@ class Command(CoreCommand):
                     dest='profile', default=False,
                     help='Profile tests.'),
         make_option('-t', '--tags', action='store', dest='tags', default=None,
-            help='Comma separated list of tags to be tested. '
-                 'Only tests that meet at least one of those tags will be run.')
+                    help='Comma separated list of tags to be tested. '
+                    'Only tests that meet at least one of those tags '
+                    'will be run.'),
+        make_option('-e', '--exclude-tags', action='store', dest='exclude_tags',
+                    default=None,
+                    help='Comma separated list of tags to not be tested. '
+                    'Exclusion takes priority over inclusion. The list of '
+                    'tags can also be specified in a setting '
+                    '(TEST_EXCLUDE_TAGS). If both are '
+                    'given, the command line options supersede the setting'),
+        make_option('-n', '--no-exclude', action='store_true',
+                    dest='no_exclude', default=False,
+                    help='Ignore tag exclusions from setting or command line')
         )
 
     def handle(self, *test_labels, **options):
@@ -56,8 +67,13 @@ class Command(CoreCommand):
         if options['pdb']:
             TestRunner = self.pdb_wrap(TestRunner)
 
-        if options['tags']:
-            TestRunner = self.tag_wrap(TestRunner, options['tags'])
+        if options['tags'] or options['exclude_tags']:
+            exclusions = None
+            if not options['no_exclude']:
+                exclusions = options.get('exclude_tags') or ','.join(
+                    getattr(settings, 'TEST_EXCLUDE_TAGS'))
+            TestRunner = self.tag_wrap(TestRunner, options.get('tags') or '',
+                                       exclusions or '')
 
         if options['xmlreports']:
             TestRunner = self.xml_wrap(TestRunner)
@@ -102,9 +118,10 @@ class Command(CoreCommand):
             pass
         return XmlTestSuiteRunner
 
-    def tag_wrap(self, Runner, test_tags):
+    def tag_wrap(self, Runner, test_tags, test_exclude_tags):
         class TagTestRunner(TagTestSuiteMixin, Runner):
             tags = test_tags.split(',')
+            exclude_tags = test_exclude_tags.split(',')
         return TagTestRunner
 
     def _core_handle(self, TestRunner, *test_labels, **options):

@@ -156,7 +156,7 @@ class XmlTestSuiteMixin(object):
 
 class TagTestSuiteMixin(object):
     def run_suite(self, suite, **kwargs):
-        if self.tags:
+        if self.tags or self.exclude_tags:
             suite = self.filter_by_tag(suite)
         return super(TagTestSuiteMixin, self).run_suite(suite, **kwargs)
 
@@ -164,11 +164,15 @@ class TagTestSuiteMixin(object):
         """
         Filter test suite to only include tagged tests.
         """
+        def tags_in(test, tags=[]):
+            return [tag in getattr(test.__class__, 'tags', []) for tag in tags]
+
         suite = unittest.TestSuite()
         for test in tests:
             if hasattr(test, '__iter__'):
                 suite.addTest(self.filter_by_tag(test))
             else:
-                if any(tag in getattr(test.__class__, 'tags', []) for tag in self.tags):
-                    suite.addTest(test)
+                if any(tags_in(test, self.tags)):
+                    if not any(tags_in(test, self.exclude_tags)):
+                        suite.addTest(test)
         return suite
