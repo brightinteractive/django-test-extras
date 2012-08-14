@@ -67,9 +67,9 @@ class Command(CoreCommand):
         if options['pdb']:
             TestRunner = self.pdb_wrap(TestRunner)
 
-        if options['tags'] or options['exclude_tags'] or getattr(settings, 'TEST_EXCLUDE_TAGS', None):
+        if options['tags'] or self.have_tag_exclusions(options):
             exclusions = None
-            if not options['no_exclude']:
+            if self.have_tag_exclusions(options) and not options['no_exclude']:
                 exclusions = options.get('exclude_tags') or ','.join(
                     getattr(settings, 'TEST_EXCLUDE_TAGS'), [])
             TestRunner = self.tag_wrap(TestRunner, options.get('tags'),
@@ -85,6 +85,9 @@ class Command(CoreCommand):
             TestRunner = self.profile_wrap(TestRunner)
 
         self._core_handle(TestRunner, *test_labels, **options)
+
+    def have_tag_exclusions(self, options):
+        return bool(options['exclude_tags'] or getattr(settings, 'TEST_EXCLUDE_TAGS', None))
 
     def south_patch(self):
         try:
