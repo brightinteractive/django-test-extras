@@ -11,9 +11,13 @@ have to depend on selenium.
 
 from __future__ import absolute_import
 
-from selenium.webdriver.firefox.webdriver import WebDriver
+from django.conf import settings
+import selenium.webdriver.firefox.webdriver
 from test_extras.testcases import DataPreservingTransactionTestCaseMixin
 import django.test
+
+# Default to Firefox but allow this to be overridden in Django settings
+WebDriver = getattr(settings, 'WEBDRIVER_CLASS', selenium.webdriver.firefox.webdriver.WebDriver)
 
 
 class SeleniumTestCase(DataPreservingTransactionTestCaseMixin, django.test.LiveServerTestCase):
