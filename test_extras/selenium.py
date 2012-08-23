@@ -23,7 +23,7 @@ WebDriver = getattr(settings, 'WEBDRIVER_CLASS', selenium.webdriver.firefox.webd
 class SeleniumTestCase(DataPreservingTransactionTestCaseMixin, django.test.LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.selenium = WebDriver()
+        cls.browser = WebDriver()
         super(SeleniumTestCase, cls).setUpClass()
 
     @classmethod
@@ -32,5 +32,5 @@ class SeleniumTestCase(DataPreservingTransactionTestCaseMixin, django.test.LiveS
         # were getting "Failed to shutdown the live test server in 2 seconds."
         # errors from StoppableWSGIServer.shutdown() when we called super
         # tearDownClass first.
-        cls.selenium.quit()
+        cls.browser.quit()
         super(SeleniumTestCase, cls).tearDownClass()
