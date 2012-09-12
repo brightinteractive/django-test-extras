@@ -7,6 +7,17 @@ WebDriver Plus related test code.
 
 This is in a seperate file, not testcases.py, so that testcases.py doesn't
 have to depend on selenium or webdriverplus.
+
+Uses the following Django settings:
+
+WEBDRIVERPLUS_BROWSER: (optional) browser argument to pass to webdriverplus.WebDriver, for example 'chrome' or 'firefox'
+
+WEBDRIVERPLUS_KWARGS: (optional) keyword arguments to pass to webdriverplus.WebDriver, for example:
+
+    from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+    WEBDRIVERPLUS_KWARGS = {
+        'firefox_binary': FirefoxBinary('/Applications/Developer/Selenium/Firefox14/Firefox.app/Contents/MacOS/firefox-bin')
+        }
 """
 
 from __future__ import absolute_import
@@ -29,7 +40,10 @@ class WebDriverPlusTestCase(DataPreservingTransactionTestCaseMixin, django.test.
 
     @classmethod
     def setUpClass(cls):
-        cls.browser = WebDriver(browser=browser)
+        # Allow extra keyword args to pass to WebDriver constructor to be
+        # specified in Django settings
+        kwargs = getattr(settings, 'WEBDRIVERPLUS_KWARGS', {})
+        cls.browser = WebDriver(browser=browser, **kwargs)
         super(WebDriverPlusTestCase, cls).setUpClass()
 
     @classmethod
