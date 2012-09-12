@@ -21,6 +21,7 @@ class Command(CoreCommand):
     --xmlreports
     --profile
     --tags
+    --headless
     """
 
     option_list = CoreCommand.option_list + (
@@ -50,7 +51,10 @@ class Command(CoreCommand):
                     'given, the command line options supersede the setting'),
         make_option('-n', '--no-exclude', action='store_true',
                     dest='no_exclude', default=False,
-                    help='Ignore tag exclusions from setting or command line')
+                    help='Ignore tag exclusions from setting or command line'),
+        make_option('--headless', action='store_true',
+                    dest='headless', default=False,
+                    help='Start a virtual display, to facilitate running Selenium tests on virtual servers. Requires pyvirtualdisplay.')
         )
 
     def handle(self, *test_labels, **options):
@@ -83,6 +87,9 @@ class Command(CoreCommand):
 
         if options['profile']:
             TestRunner = self.profile_wrap(TestRunner)
+
+        if options['headless']:
+            self.start_headless_display()
 
         self._core_handle(TestRunner, *test_labels, **options)
 
@@ -126,6 +133,13 @@ class Command(CoreCommand):
             tags = test_tags.split(',') if test_tags else []
             exclude_tags = test_exclude_tags.split(',') if test_exclude_tags else []
         return TagTestRunner
+
+    def start_headless_display(self):
+        # Import here instead of top of file so we don't depend on
+        # pyvirtualdisplay unless the headless option isn't used.
+        from pyvirtualdisplay import Display
+        display = Display(visible=0, size=(1280, 1024))
+        display.start()
 
     def _core_handle(self, TestRunner, *test_labels, **options):
         """ Copied from django.core.management.commands.test (1.4)"""
