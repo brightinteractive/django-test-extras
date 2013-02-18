@@ -60,6 +60,22 @@ class WebDriverPlusTestCase(DataPreservingTransactionTestCaseMixin, django.test.
             lambda browser: browser.find(*args, **kwargs)
             )
 
+    # Note: this is not a very nice API and it also uses the internal method
+    # _empty(), it would be nicer to implement this inside WebDriver Plus,
+    # see https://github.com/tomchristie/webdriverplus/issues/13
+    def find_and_wait_for_visible(self, *args, **kwargs):
+        def _find_visible(browser):
+            elements = browser.find(*args, **kwargs)
+            visible = elements._empty()
+            for element in elements:
+                if element.is_displayed:
+                    visible.add(element)
+            return visible
+
+        return WebDriverWait(self.browser, self.PAGE_TIMEOUT_SECONDS).until(
+            lambda browser: _find_visible(browser)
+            )
+
     def find_hidden_text(self, *args, **kwargs):
         element = self.browser.find(*args, **kwargs)
         return self.get_hidden_text(element)
