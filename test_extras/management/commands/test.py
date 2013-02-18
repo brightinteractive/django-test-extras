@@ -71,6 +71,9 @@ class Command(CoreCommand):
         if options['pdb']:
             TestRunner = self.pdb_wrap(TestRunner)
 
+        if options['xmlreports']:
+            TestRunner = self.xml_wrap(TestRunner)
+
         if options['tags'] or self.have_tag_exclusions(options):
             exclusions = None
             if self.have_tag_exclusions(options) and not options['no_exclude']:
@@ -78,9 +81,6 @@ class Command(CoreCommand):
                     getattr(settings, 'TEST_EXCLUDE_TAGS'), [])
             TestRunner = self.tag_wrap(TestRunner, options.get('tags'),
                                        exclusions)
-
-        if options['xmlreports']:
-            TestRunner = self.xml_wrap(TestRunner)
 
         if options['coverage']:
             TestRunner = self.coverage_wrap(TestRunner, options['coverage'])
