@@ -48,6 +48,10 @@ Join us in #brightinteractive on irc.freenode.net.
 Changelog
 =========
 
+1.0.10
+------
+* Fix tag inclusion/exclusion options not working if '-x' is also specified
+
 1.0.0
 -----
 
