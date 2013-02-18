@@ -25,5 +25,5 @@ class EnableDatabaseLoggingContext(object):
         self.connection.use_debug_cursor = True
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type=None, exc_value=None, traceback=None):
         self.connection.use_debug_cursor = self.old_debug_cursor
