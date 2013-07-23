@@ -3,7 +3,7 @@
 # http://www.bright-interactive.com | info@bright-interactive.com
 
 from django.conf import settings
-from test_extras.testrunners import CoverageTestSuiteWrapper, PdbTestSuiteMixin, XmlTestSuiteMixin, ProfileTestSuiteWrapper, TagTestSuiteMixin
+from test_extras.testrunners import result_hook_wrap, CoverageTestSuiteWrapper, PdbTestSuiteMixin, XmlTestSuiteMixin, ProfileTestSuiteWrapper, TagTestSuiteMixin
 from django.core.management.commands.test import Command as CoreCommand
 
 from optparse import make_option
@@ -63,6 +63,8 @@ class Command(CoreCommand):
         TestRunner = get_runner(settings)
 
         self.south_patch()
+
+        TestRunner = result_hook_wrap(TestRunner)
 
         if options['pdb'] and options['xmlreports']:
             from optparse import OptionError

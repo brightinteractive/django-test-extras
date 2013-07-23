@@ -3,10 +3,11 @@
 # http://www.bright-interactive.com | info@bright-interactive.com
 
 from django.conf import settings
+from django.utils import unittest
 import coverage
+import django.test.simple
 import os.path
 import pdb
-from django.utils import unittest
 import xmlrunner
 profile = None  # Fool pylint about double import
 try:
@@ -14,6 +15,42 @@ try:
 except ImportError:
     if not profile:
         import profile
+
+
+class HookingTextTestResult(unittest._TextTestResult):
+    """
+    Allows test classes to define addSuccess addError or addFailure methods
+    that get called when a test is successful, errors or fails.
+    """
+    def addSuccess(self, test):
+        super(HookingTextTestResult, self).addSuccess(test)
+        if hasattr(test, 'addSuccess'):
+            test.addSuccess()
+
+    def addError(self, test, err):
+        super(HookingTextTestResult, self).addError(test, err)
+        if hasattr(test, 'addError'):
+            test.addError(err)
+
+    def addFailure(self, test, err):
+        super(HookingTextTestResult, self).addFailure(test, err)
+        if hasattr(test, 'addFailure'):
+            test.addFailure(err)
+
+
+class HookingTextTestRunner(unittest.TextTestRunner):
+    def _makeResult(self):
+        return HookingTextTestResult(self.stream, self.descriptions, self.verbosity)
+
+
+def result_hook_wrap(TestRunner):
+    class ResultHookTestRunner(TestRunner):
+        def run_suite(self, suite, **kwargs):
+            if TestRunner.run_suite != django.test.simple.DjangoTestSuiteRunner.run_suite:
+                raise ValueError("run_suite was not the expected DjangoTestSuiteRunner.run_suite, some other code must have overridden it so it's not safe for this code to override it too")
+            return HookingTextTestRunner(
+                verbosity=self.verbosity, failfast=self.failfast).run(suite)
+    return ResultHookTestRunner
 
 
 class ProfileTestSuiteWrapper(object):
