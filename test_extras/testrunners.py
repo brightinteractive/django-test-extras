@@ -17,7 +17,13 @@ except ImportError:
         import profile
 
 
-class HookingTextTestResult(unittest._TextTestResult):
+try:
+    TextTestResult = unittest.TextTestResult
+except AttributeError:
+    TextTestResult = unittest._TextTestResult
+
+
+class HookingTextTestResult(TextTestResult):
     """
     Allows test classes to define addSuccess addError or addFailure methods
     that get called when a test is successful, errors or fails.
