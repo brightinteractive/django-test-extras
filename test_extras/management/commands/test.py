@@ -29,7 +29,7 @@ class Command(CoreCommand):
                     dest='coverage', default=None,
             type='choice', choices=['text', 'html', 'xml'],
             help='Coverage report; One of \'text\', \'html\', \'xml\''),
-        make_option('-p', '--pdb', action='store_true', dest='pdb',
+        make_option('--pdb', action='store_true', dest='pdb',
                     default=False,
                     help='Drop into pdb on test failure.'),
         make_option('-x', '--xmlreports', action='store_true',
@@ -38,8 +38,8 @@ class Command(CoreCommand):
         make_option('-f', '--profile', action='store_true',
                     dest='profile', default=False,
                     help='Profile tests.'),
-        make_option('-t', '--tags', action='store', dest='tags', default=None,
-                    help='Comma separated list of tags to be tested. '
+        make_option('-g', '--tags', action='store', dest='tags', default=None,
+                    help='Comma separated list of taGs to be tested. '
                     'Only tests that meet at least one of those tags '
                     'will be run.'),
         make_option('-e', '--exclude-tags', action='store', dest='exclude_tags',

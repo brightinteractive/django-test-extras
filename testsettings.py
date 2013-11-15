@@ -8,3 +8,5 @@ DATABASES = {
 INSTALLED_APPS = (
     'test_extras',
 )
+
+SECRET_KEY = 'stub-value-for-django'

@@ -2,4 +2,4 @@
 # (c) 2012-2013 Bright Interactive Limited. All rights reserved.
 # http://www.bright-interactive.com | info@bright-interactive.com
 
-__version__ = '1.0.11'
+__version__ = '1.1.0'
