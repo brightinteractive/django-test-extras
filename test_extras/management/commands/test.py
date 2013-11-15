@@ -54,7 +54,10 @@ class Command(CoreCommand):
                     help='Ignore tag exclusions from setting or command line'),
         make_option('--headless', action='store_true',
                     dest='headless', default=False,
-                    help='Start a virtual display, to facilitate running Selenium tests on virtual servers. Requires pyvirtualdisplay.')
+                    help='Start a virtual display, to facilitate running Selenium tests on virtual servers. Requires pyvirtualdisplay.'),
+        make_option('--no-exit', action='store_true',
+                    dest='no_exit', default=False,
+                    help="Don't call sys.exit(), useful if you're running with management.call_command()"),
         )
 
     def handle(self, *test_labels, **options):
@@ -154,5 +157,5 @@ class Command(CoreCommand):
         test_runner = TestRunner(**options)
         failures = test_runner.run_tests(test_labels)
 
-        if failures:
+        if failures and not options['no_exit']:
             sys.exit(bool(failures))
