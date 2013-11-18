@@ -48,6 +48,21 @@ Join us in #brightinteractive on irc.freenode.net.
 Changelog
 =========
 
+1.1.1
+-----
+* Fix data restore in Django 1.5/1.6 in DataPreservingTransactionTestCaseMixin
+* Declare dependencies in setup.py
+
+1.1.0
+-----
+* Add --no-exit option
+* Change short option names to avoid conflicts with new Django 1.6 options. This is a breaking change - if you were using `-t` you should now use `--tags` instead and if you were using `-p` you should now use `--pdb` instead.
+
+1.0.11
+------
+* Python 2.7 compatibility fix
+* Allow test classes to hook addSuccess, addError and addFailure
+
 1.0.10
 ------
 * Fix tag inclusion/exclusion options not working if '-x' is also specified
