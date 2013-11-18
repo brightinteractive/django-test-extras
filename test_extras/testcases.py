@@ -79,8 +79,8 @@ class DataPreservingTransactionTestCaseMixin(NonFlushingTransactionTestCaseMixin
                     database=db, use_base_manager=True, format='json', stdout=dumpfile)
             self.database_dumpfilepaths[db] = dumpfile.name
 
-    def tearDown(self):
-        super(DataPreservingTransactionTestCaseMixin, self).tearDown()
+    def __call__(self, *args, **kwargs):
+        super(DataPreservingTransactionTestCaseMixin, self).__call__(*args, **kwargs)
 
         for (db, dumpfilepath) in self.database_dumpfilepaths.iteritems():
             call_command('superflush', verbosity=0, interactive=False, database=db)
