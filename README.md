@@ -10,8 +10,11 @@ Adding to your Django Project
 
 Requires Django 1.4, 1.5, 1.6 or 1.7.
 
-Add test\_extras to your INSTALLED_APPS. Run "./manage test --help" for help
-on the new options provided.
+Add `test_extras` to your INSTALLED_APPS. If you are using South make sure
+that `south` is before `test_extras` so that the `test` management command
+from `test_extras` is used in preference to the one from `south`.
+
+Run "./manage test --help" for help on the new options provided.
 
 Publishing releases to PyPI
 ===========================
