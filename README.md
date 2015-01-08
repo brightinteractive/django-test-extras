@@ -8,7 +8,7 @@ Django Test Extras
 Adding to your Django Project
 =============================
 
-Requires Django 1.4 (might work with 1.3, not tested).
+Requires Django 1.4, 1.5, 1.6 or 1.7.
 
 Add test\_extras to your INSTALLED_APPS. Run "./manage test --help" for help
 on the new options provided.
@@ -47,6 +47,10 @@ Join us in #brightinteractive on irc.freenode.net.
 
 Changelog
 =========
+
+1.1.2
+-----
+* Allow use with Django 1.7 (note: django-test-extras has not yet been thoroughly tested with Django 1.7)
 
 1.1.1
 -----

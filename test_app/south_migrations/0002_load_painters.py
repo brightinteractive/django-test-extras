@@ -2,7 +2,7 @@
 from south.utils import datetime_utils as datetime
 from south.db import db
 from django.db import models
-from test_app.migrations import FixtureMigration
+from test_app.south_migrations import FixtureMigration
 import os.path
 
 
