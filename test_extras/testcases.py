@@ -38,13 +38,15 @@ class NonFlushingTransactionTestCaseMixin(object):
         flushing the database.
         """
         # hold onto the original and replace flush command with a no-op
-        original_flush_command = management._commands['flush']
+        # commands = management._commands
+        commands = management.get_commands()
+        original_flush_command = commands['flush']
         try:
-            management._commands['flush'] = SkipFlushCommand()
+            commands['flush'] = SkipFlushCommand()
             super(NonFlushingTransactionTestCaseMixin, self)._fixture_setup()
         finally:
             # unpatch flush back to the original
-            management._commands['flush'] = original_flush_command
+            commands['flush'] = original_flush_command
 
 
 class DataPreservingTransactionTestCaseMixin(NonFlushingTransactionTestCaseMixin):

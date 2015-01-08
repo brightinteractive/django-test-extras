@@ -7,10 +7,12 @@ import os.path
 
 
 THIS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+APP_DIR = os.path.split(THIS_DIR)[0]
+FIXTURES_DIR = os.path.join(APP_DIR, 'fixtures')
 
 
 class Migration(FixtureMigration):
-    fixture = os.path.join(THIS_DIR, '0002_load_painters.json')
+    fixture = os.path.join(FIXTURES_DIR, 'painters.json')
 
     models = {
         'test_app.painter': {
