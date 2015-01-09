@@ -60,6 +60,10 @@ class DataPreservingTransactionTestCaseMixin(NonFlushingTransactionTestCaseMixin
        class MyTestCase(TransactionTestCase, DataPreservingTransactionTestCaseMixin):
     """
 
+    def __init__(self, *args, **kwargs):
+        super(DataPreservingTransactionTestCaseMixin, self).__init__(*args, **kwargs)
+        self.database_dumpfilepaths = {}
+
     def setUp(self):
         super(DataPreservingTransactionTestCaseMixin, self).setUp()
 
@@ -86,3 +90,5 @@ class DataPreservingTransactionTestCaseMixin(NonFlushingTransactionTestCaseMixin
             call_command('superflush', verbosity=0, interactive=False, database=db)
             call_command('loaddata', dumpfilepath, verbosity=0, interactive=False)
             os.remove(dumpfilepath)
+
+        self.database_dumpfilepaths = {}
