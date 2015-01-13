@@ -16,6 +16,15 @@ class SkipFlushCommand(flush.Command):
     def handle_noargs(self, **options):
         return
 
+    def __enter__(self):
+        # hold onto the original and replace flush command with a no-op
+        self.original_flush_command = management._commands['flush']
+        management._commands['flush'] = self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        # unpatch flush back to the original
+        management._commands['flush'] = self.original_flush_command
+
 
 class NonFlushingTransactionTestCaseMixin(object):
     """
@@ -36,15 +45,22 @@ class NonFlushingTransactionTestCaseMixin(object):
         Overrides TransactionTestCase._fixture_setup() and replaces the flush
         command with a dummy command whilst it is running to prevent it from
         flushing the database.
+        Django 1.4 flushes the database on fixture setup, but Django
+        1.5 flushes the database on fixture teardown.
         """
-        # hold onto the original and replace flush command with a no-op
-        original_flush_command = management._commands['flush']
-        try:
-            management._commands['flush'] = SkipFlushCommand()
+        with SkipFlushCommand():
             super(NonFlushingTransactionTestCaseMixin, self)._fixture_setup()
-        finally:
-            # unpatch flush back to the original
-            management._commands['flush'] = original_flush_command
+
+    def _fixture_teardown(self):
+        """
+        Overrides TransactionTestCase._fixture_teardown() and replaces
+        the flush command with a dummy command whilst it is running to
+        prevent it from flushing the database.
+        Django 1.4 flushes the database on fixture setup, but Django
+        1.5 flushes the database on fixture teardown.
+        """
+        with SkipFlushCommand():
+            super(NonFlushingTransactionTestCaseMixin, self)._fixture_teardown()
 
 
 class DataPreservingTransactionTestCaseMixin(NonFlushingTransactionTestCaseMixin):
