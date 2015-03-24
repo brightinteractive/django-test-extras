@@ -65,7 +65,8 @@ class Command(CoreCommand):
 
         TestRunner = get_runner(settings)
 
-        self.south_patch()
+        if 'south' in settings.INSTALLED_APPS:
+            self.south_patch()
 
         TestRunner = result_hook_wrap(TestRunner)
 
