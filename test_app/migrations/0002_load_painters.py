@@ -1,24 +1,17 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from django.db import models
-from test_app.migrations import FixtureMigration
-import os.path
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django_migration_fixture import fixture
+import test_app
 
 
-THIS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+class Migration(migrations.Migration):
 
+    dependencies = [
+        ('test_app', '0001_initial'),
+    ]
 
-class Migration(FixtureMigration):
-    fixture = os.path.join(THIS_DIR, '0002_load_painters.json')
-
-    models = {
-        'test_app.painter': {
-            'Meta': {'object_name': 'Painter'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        }
-    }
-
-    complete_apps = ['test_app']
-    symmetrical = True
+    operations = [
+        migrations.RunPython(**fixture(test_app, 'painters.json')),
+    ]
