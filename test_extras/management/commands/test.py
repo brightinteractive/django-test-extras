@@ -103,12 +103,8 @@ class Command(CoreCommand):
         return bool(options['exclude_tags'] or getattr(settings, 'TEST_EXCLUDE_TAGS', None))
 
     def south_patch(self):
-        try:
-            from south.management.commands import patch_for_test_db_setup
-        except ImportError:
-            pass
-        else:
-            patch_for_test_db_setup()
+        from south.management.commands import patch_for_test_db_setup
+        patch_for_test_db_setup()
 
     def profile_wrap(self, Runner):
         class ProfileTestSuiteRunner(ProfileTestSuiteWrapper):
