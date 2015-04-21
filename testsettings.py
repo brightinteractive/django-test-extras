@@ -11,6 +11,8 @@ DATABASES = {
 INSTALLED_APPS = (
     'test_extras',
     'test_app',
+    'test_app_no_models',
+    'dotted.dotted_test_app',
 )
 
 MIDDLEWARE_CLASSES = (
