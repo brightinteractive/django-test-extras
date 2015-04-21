@@ -129,17 +129,17 @@ def get_coverage_files(app_labels, ignore_dirs, ignore_files):
     return a list of all the python files that should be included in
     a coverage report for that test.
     """
-    ret = []
+    files_for_coverage = []
 
     for app_label in app_labels:
         if app_label in settings.INSTALLED_APPS:
-            module = __import__(app_label, fromlist=[''])
+            module = __import__(app_label, globals(), locals(), [''], -1)
             dirname = os.path.dirname(module.__file__)
-            ret.extend(get_coverage_files_in_directory(dirname, ignore_dirs, ignore_files))
+            files_for_coverage.extend(get_coverage_files_in_directory(dirname, ignore_dirs, ignore_files))
         else:
             raise ImproperlyConfigured('%s is not installed' % app_label)
 
-    return ret
+    return files_for_coverage
 
 
 class ExceptionTestResultMixin(object):
