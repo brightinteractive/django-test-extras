@@ -3,11 +3,13 @@
 # http://www.bright-interactive.com | info@bright-interactive.com
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.utils import unittest
 import coverage
 import django.test.simple
 import os.path
 import pdb
+import sys
 import xmlrunner
 profile = None  # Fool pylint about double import
 try:
@@ -127,14 +129,15 @@ def get_coverage_files(app_labels, ignore_dirs, ignore_files):
     return a list of all the python files that should be included in
     a coverage report for that test.
     """
-    from django.db.models import get_app
-
     ret = []
 
     for app_label in app_labels:
-        module = get_app(app_label)
-        dirname = os.path.dirname(module.__file__)
-        ret.extend(get_coverage_files_in_directory(dirname, ignore_dirs, ignore_files))
+        if app_label in settings.INSTALLED_APPS:
+            module = __import__(app_label, fromlist=[''])
+            dirname = os.path.dirname(module.__file__)
+            ret.extend(get_coverage_files_in_directory(dirname, ignore_dirs, ignore_files))
+        else:
+            raise ImproperlyConfigured('%s is not installed' % app_label)
 
     return ret
 
