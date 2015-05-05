@@ -1,11 +1,9 @@
 from optparse import make_option
 
-from django.conf import settings
 from django.db import connections, transaction, DEFAULT_DB_ALIAS
 from django.core.management.base import NoArgsCommand, CommandError
 from django.core.management.color import no_style
 from django.core.management.sql import sql_flush
-from django.utils.importlib import import_module
 
 
 class Command(NoArgsCommand):
@@ -40,18 +38,17 @@ Are you sure you want to do this?
 
         if confirm == 'yes':
             try:
-                cursor = connection.cursor()
-                for sql in sql_list:
-                    cursor.execute(sql)
-            except Exception, e:
-                transaction.rollback_unless_managed(using=db)
+                with transaction.atomic():
+                    cursor = connection.cursor()
+                    for sql in sql_list:
+                        cursor.execute(sql)
+            except Exception as e:
                 raise CommandError("""Database %s couldn't be flushed. Possible reasons:
   * The database isn't running or isn't configured correctly.
   * At least one of the expected database tables doesn't exist.
   * The SQL was invalid.
 Hint: Look at the output of 'django-admin.py sqlflush'. That's the SQL this command wasn't able to run.
 The full error: %s""" % (connection.settings_dict['NAME'], e))
-            transaction.commit_unless_managed(using=db)
 
         else:
             print "Flush cancelled."
