@@ -1,6 +1,13 @@
+# Compiled python modules
 *.pyc
+
+# Setuptools distribution folder
+/dist/
+
+# Python egg metadata
+*.egg-info/
+
+# Other
 MANIFEST
-dist/
 build/
 .tox/
-*.egg-info/
