@@ -12,15 +12,15 @@ have to depend on selenium.
 from __future__ import absolute_import
 
 from django.conf import settings
-import selenium.webdriver.firefox.webdriver
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from test_extras.testcases import DataPreservingTransactionTestCaseMixin
-import django.test
+import selenium.webdriver.firefox.webdriver
 
 # Default to Firefox but allow this to be overridden in Django settings
 WebDriver = getattr(settings, 'WEBDRIVER_CLASS', selenium.webdriver.firefox.webdriver.WebDriver)
 
 
-class SeleniumTestCase(DataPreservingTransactionTestCaseMixin, django.test.LiveServerTestCase):
+class SeleniumTestCase(DataPreservingTransactionTestCaseMixin, StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         cls.browser = WebDriver()
