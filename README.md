@@ -8,7 +8,7 @@ Django Test Extras
 Adding to your Django Project
 =============================
 
-Requires Django 1.4, 1.5, 1.6 or 1.7.
+Requires Django 1.7 or 1.8.
 
 Add `test_extras` to your INSTALLED_APPS. If you are using South make sure
 that `south` is before `test_extras` so that the `test` management command
@@ -50,6 +50,18 @@ Join us in #brightinteractive on irc.freenode.net.
 
 Changelog
 =========
+
+2.0.0
+-----
+* Add Django 1.8 compatibility
+
+Backwards-incompatible changes (hence the new major version):
+* Drop support for Django 1.4, 1.5 and 1.6 (you can still use django-test-extras 1.1.4 if you can't upgrade Django)
+* Remove superflush command - it was added for use by DataPreservingTransactionTestCaseMixin and is no longer needed now that DataPreservingTransactionTestCaseMixin has been rewritten for Django 1.8
+
+1.1.4
+-----
+* Fix coverage for apps with no models: https://github.com/brightinteractive/django-test-extras/issues/6
 
 1.1.2
 -----

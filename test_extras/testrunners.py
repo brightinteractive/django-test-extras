@@ -6,10 +6,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils import unittest
 import coverage
-import django.test.simple
 import os.path
 import pdb
-import sys
 import xmlrunner
 profile = None  # Fool pylint about double import
 try:
@@ -17,12 +15,23 @@ try:
 except ImportError:
     if not profile:
         import profile
-
-
 try:
     TextTestResult = unittest.TextTestResult
 except AttributeError:
     TextTestResult = unittest._TextTestResult
+
+_RUN_SUITE_WHITELIST = []
+try:
+    import django.test.simple
+    _RUN_SUITE_WHITELIST.append(django.test.simple.DjangoTestSuiteRunner.run_suite)
+except ImportError:
+    pass
+
+try:
+    import django.test.runner
+    _RUN_SUITE_WHITELIST.append(django.test.runner.DiscoverRunner.run_suite)
+except ImportError:
+    pass
 
 
 class HookingTextTestResult(TextTestResult):
@@ -54,10 +63,26 @@ class HookingTextTestRunner(unittest.TextTestRunner):
 def result_hook_wrap(TestRunner):
     class ResultHookTestRunner(TestRunner):
         def run_suite(self, suite, **kwargs):
-            if TestRunner.run_suite != django.test.simple.DjangoTestSuiteRunner.run_suite:
-                raise ValueError("run_suite was not the expected DjangoTestSuiteRunner.run_suite, some other code must have overridden it so it's not safe for this code to override it too")
+            self._validate_run_suite()
             return HookingTextTestRunner(
                 verbosity=self.verbosity, failfast=self.failfast).run(suite)
+
+        def _validate_run_suite(self):
+            # our run_suite method completely overrides the superclass
+            # TestRunner's run_suite method.  Therefore we check that the
+            # superclass's run_suite is one that we know simply consists of
+            # return unittest.TextTestRunner(
+            #     verbosity=self.verbosity,
+            #     failfast=self.failfast,
+            # ).run(suite)
+            # because our run_suite does the same, except using a subclass of
+            # unittest.TextTestRunner.
+            if TestRunner.run_suite not in _RUN_SUITE_WHITELIST:
+                raise ValueError(
+                    "run_suite was not one of the whitelisted run_suite methods, "
+                    "either some other code must have overridden it "
+                    "or you are using an unsupported test runner "
+                    "so it's not safe for this code to override run_suite too")
     return ResultHookTestRunner
 
 
