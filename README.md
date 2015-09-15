@@ -8,11 +8,9 @@ Django Test Extras
 Adding to your Django Project
 =============================
 
-Requires Django 1.7 or 1.8.
+Requires Django 1.8.
 
-Add `test_extras` to your INSTALLED_APPS. If you are using South make sure
-that `south` is before `test_extras` so that the `test` management command
-from `test_extras` is used in preference to the one from `south`.
+Add `test_extras` to your INSTALLED_APPS.
 
 Run "./manage test --help" for help on the new options provided.
 
@@ -50,6 +48,11 @@ Join us in #brightinteractive on irc.freenode.net.
 
 Changelog
 =========
+
+3.0.0
+-----
+* Fix issue parsing arguments to the `test` command: https://github.com/brightinteractive/django-test-extras/issues/11
+* Drop support for Django 1.7 (this was to make it easier to fix the above issue).
 
 2.0.0
 -----

@@ -2,6 +2,8 @@
 # (c) 2013 Bright Interactive Limited. All rights reserved.
 # http://www.bright-interactive.com | info@bright-interactive.com
 from django.test import TestCase, TransactionTestCase
+import subprocess
+import sys
 import test_app
 import os
 from test_extras.testcases import DataPreservingTransactionTestCaseMixin
@@ -48,3 +50,16 @@ class CoverageTests(TestCase):
         full_paths = [os.path.join(os.path.dirname(test_app.__file__), file_name) for file_name in expected_coverage_file_names]
         self.assertEqual(len(full_paths), len(coverage_files))
         self.assertTrue(all(path in coverage_files for path in full_paths))
+
+
+class OptionParsingTests(TestCase):
+    def test_liveserver_option_can_be_parsed(self):
+        """
+        Failing test for https://github.com/brightinteractive/django-test-extras/issues/11
+        """
+        out = subprocess.check_output(
+            [sys.executable, 'manage.py', 'test', '--dump-options',  '--liveserver=localhost:8100-8999'],
+            env=os.environ.copy())
+        parsed_options = eval(out)
+        self.assertEqual('localhost:8100-8999',
+                         parsed_options['liveserver'])
