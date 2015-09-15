@@ -84,9 +84,6 @@ class Command(CoreCommand):
 
         TestRunner = get_runner(settings)
 
-        if 'south' in settings.INSTALLED_APPS:
-            self.south_patch()
-
         TestRunner = result_hook_wrap(TestRunner)
 
         if options['pdb'] and options['xmlreports']:
@@ -120,10 +117,6 @@ class Command(CoreCommand):
 
     def have_tag_exclusions(self, options):
         return bool(options['exclude_tags'] or getattr(settings, 'TEST_EXCLUDE_TAGS', None))
-
-    def south_patch(self):
-        from south.management.commands import patch_for_test_db_setup
-        patch_for_test_db_setup()
 
     def profile_wrap(self, Runner):
         class ProfileTestSuiteRunner(ProfileTestSuiteWrapper):
