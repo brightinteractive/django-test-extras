@@ -6,7 +6,7 @@ from django.conf import settings
 from test_extras.testrunners import result_hook_wrap, CoverageTestSuiteWrapper, PdbTestSuiteMixin, XmlTestSuiteMixin, ProfileTestSuiteWrapper, TagTestSuiteMixin
 from django.core.management.commands.test import Command as CoreCommand
 
-from optparse import make_option
+import argparse
 import os
 import sys
 
@@ -24,43 +24,62 @@ class Command(CoreCommand):
     --headless
     """
 
-    option_list = CoreCommand.option_list + (
-        make_option('-c', '--coverage', action='store',
-                    dest='coverage', default=None,
-            type='choice', choices=['text', 'html', 'xml'],
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+
+        parser.add_argument(
+            '-c', '--coverage', action='store',
+            dest='coverage', default=None,
+            choices=['text', 'html', 'xml'],
             help='Coverage report; One of \'text\', \'html\', \'xml\''),
-        make_option('--pdb', action='store_true', dest='pdb',
-                    default=False,
-                    help='Drop into pdb on test failure.'),
-        make_option('-x', '--xmlreports', action='store_true',
-                    dest='xmlreports', default=False,
-                    help='Tells Django to store xml reports of the tests for Jenkins to use.'),
-        make_option('-f', '--profile', action='store_true',
-                    dest='profile', default=False,
-                    help='Profile tests.'),
-        make_option('-g', '--tags', action='store', dest='tags', default=None,
-                    help='Comma separated list of taGs to be tested. '
-                    'Only tests that meet at least one of those tags '
-                    'will be run.'),
-        make_option('-e', '--exclude-tags', action='store', dest='exclude_tags',
-                    default=None,
-                    help='Comma separated list of tags to not be tested. '
-                    'Exclusion takes priority over inclusion. The list of '
-                    'tags can also be specified in a setting '
-                    '(TEST_EXCLUDE_TAGS). If both are '
-                    'given, the command line options supersede the setting'),
-        make_option('-n', '--no-exclude', action='store_true',
-                    dest='no_exclude', default=False,
-                    help='Ignore tag exclusions from setting or command line'),
-        make_option('--headless', action='store_true',
-                    dest='headless', default=False,
-                    help='Start a virtual display, to facilitate running Selenium tests on virtual servers. Requires pyvirtualdisplay.'),
-        make_option('--no-exit', action='store_true',
-                    dest='no_exit', default=False,
-                    help="Don't call sys.exit(), useful if you're running with management.call_command()"),
-        )
+        parser.add_argument(
+            '--pdb', action='store_true', dest='pdb',
+            default=False,
+            help='Drop into pdb on test failure.'),
+        parser.add_argument(
+            '-x', '--xmlreports', action='store_true',
+            dest='xmlreports', default=False,
+            help='Tells Django to store xml reports of the tests for Jenkins to use.'),
+        parser.add_argument(
+            '-f', '--profile', action='store_true',
+            dest='profile', default=False,
+            help='Profile tests.'),
+        parser.add_argument(
+            '-g', '--tags', action='store', dest='tags', default=None,
+            help='Comma separated list of taGs to be tested. '
+                 'Only tests that meet at least one of those tags '
+                 'will be run.'),
+        parser.add_argument(
+            '-e', '--exclude-tags', action='store', dest='exclude_tags',
+            default=None,
+            help='Comma separated list of tags to not be tested. '
+                 'Exclusion takes priority over inclusion. The list of '
+                 'tags can also be specified in a setting '
+                 '(TEST_EXCLUDE_TAGS). If both are '
+                 'given, the command line options supersede the setting'),
+        parser.add_argument(
+            '-n', '--no-exclude', action='store_true',
+            dest='no_exclude', default=False,
+            help='Ignore tag exclusions from setting or command line'),
+        parser.add_argument(
+            '--headless', action='store_true',
+            dest='headless', default=False,
+            help='Start a virtual display, to facilitate running Selenium tests on virtual servers. Requires pyvirtualdisplay.'),
+        parser.add_argument(
+            '--no-exit', action='store_true',
+            dest='no_exit', default=False,
+            help="Don't call sys.exit(), useful if you're running with management.call_command()"),
+        parser.add_argument(
+            '--dump-options', action='store_true',
+            # Only intended to be used by the django-test-extras automated test OptionParsingTests, so don't show in help
+            help=argparse.SUPPRESS)
 
     def handle(self, *test_labels, **options):
+        if options['dump_options']:
+            # Dump the parsed options and then exit without running tests
+            self.stdout.write(repr(options))
+            return
+
         from django.test.utils import get_runner
 
         TestRunner = get_runner(settings)
