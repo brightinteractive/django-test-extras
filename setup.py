@@ -12,7 +12,7 @@ package = 'test_extras'
 description = 'Enhancements for the Django test command and testing utility code'
 url = 'http://github.com/brightinteractive/django-test-extras/'
 author = 'Bright Interactive'
-author_email = 'francis@bright-interactive.co.uk'
+author_email = 'admin@bright-interactive.co.uk'
 license = 'BSD'
 install_requires = ['Django>=1.7,<1.9a0dev0']
 
