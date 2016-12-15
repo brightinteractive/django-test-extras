@@ -51,14 +51,13 @@ To run the tests against multiple environments, install `tox` using
 then simply run `tox`:
 
     tox
-    
-Contact
-=======
-
-Join us in #brightinteractive on irc.freenode.net.
 
 Changelog
 =========
+
+3.0.1
+-----
+* Fix issue with `dumpdata` attempting to access unmanaged models. 
 
 3.0.0
 -----
