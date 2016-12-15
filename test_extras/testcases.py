@@ -82,8 +82,13 @@ class DataPreservingTransactionTestCaseMixin(NonFlushingTransactionTestCaseMixin
             with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as dumpfile:
                 call_command('dumpdata',
                     verbosity=0, interactive=False,
-                    database=db, use_base_manager=True, format='json', stdout=dumpfile)
+                    database=db, use_base_manager=True, format='json', stdout=dumpfile, exclude=self._get_unmanaged_models())
             self.database_dumpfilepaths[db] = dumpfile.name
+
+    def _get_unmanaged_models(self):
+        from django.apps import apps
+        self.unmanaged_models = [m.__name__.lower() for m in apps.get_models() if not m._meta.managed]
+        return self.unmanaged_models
 
     def __call__(self, *args, **kwargs):
         super(DataPreservingTransactionTestCaseMixin, self).__call__(*args, **kwargs)
