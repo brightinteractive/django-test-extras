@@ -4,11 +4,17 @@
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.utils import unittest
 import coverage
 import os.path
 import pdb
 import xmlrunner
+
+try:
+    # Removed in Django 1.9
+    from django.utils import unittest
+except ImportError:
+    import unittest
+
 profile = None  # Fool pylint about double import
 try:
     import cProfile as profile
