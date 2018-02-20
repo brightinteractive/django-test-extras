@@ -1,4 +1,3 @@
-from distlib.version import NormalizedVersion
 import django
 
 DATABASES = {
@@ -13,6 +12,7 @@ INSTALLED_APPS = (
     'test_app',
     'test_app_no_models',
     'dotted.dotted_test_app',
+    'django_migration_fixture',
 )
 
 MIDDLEWARE_CLASSES = (
