@@ -1,13 +1,13 @@
 from optparse import make_option
 
 from django.db import connections, transaction, DEFAULT_DB_ALIAS
-from django.core.management.base import NoArgsCommand, CommandError
+from django.core.management.base import BaseCommand, CommandError
 from django.core.management.color import no_style
 from django.core.management.sql import sql_flush
 
 
-class Command(NoArgsCommand):
-    option_list = NoArgsCommand.option_list + (
+class Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
         make_option('--noinput', action='store_false', dest='interactive', default=True,
             help='Tells Django to NOT prompt the user for input of any kind.'),
         make_option('--database', action='store', dest='database',
@@ -16,7 +16,7 @@ class Command(NoArgsCommand):
     )
     help = ('Deletes all data from the database, and unlike the built in flush command does NOT restore data by executing post-synchronization handlers or loading the initial_data fixture will be re-installed.')
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         db = options.get('database')
         connection = connections[db]
         verbosity = int(options.get('verbosity'))

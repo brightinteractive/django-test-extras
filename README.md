@@ -55,6 +55,10 @@ then simply run `tox`:
 Changelog
 =========
 
+3.0.2
+-----
+* Fix usage of deprecated NoArgsCommand to use BaseCommand: https://docs.djangoproject.com/en/1.8/releases/1.8/#django-core-management-noargscommand
+
 3.0.1
 -----
 * Fix issue with `dumpdata` attempting to access unmanaged models. 
