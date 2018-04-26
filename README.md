@@ -55,7 +55,7 @@ then simply run `tox`:
 Changelog
 =========
 
-3.0.2
+3.2.0
 -----
 * Fix usage of deprecated NoArgsCommand to use BaseCommand: https://docs.djangoproject.com/en/1.8/releases/1.8/#django-core-management-noargscommand
 
