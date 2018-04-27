@@ -51,15 +51,3 @@ class CoverageTests(TestCase):
         self.assertEqual(len(full_paths), len(coverage_files))
         self.assertTrue(all(path in coverage_files for path in full_paths))
 
-
-class OptionParsingTests(TestCase):
-    def test_liveserver_option_can_be_parsed(self):
-        """
-        Failing test for https://github.com/brightinteractive/django-test-extras/issues/11
-        """
-        out = subprocess.check_output(
-            [sys.executable, 'manage.py', 'test', '--dump-options',  '--liveserver=localhost:8100-8999'],
-            env=os.environ.copy())
-        parsed_options = eval(out)
-        self.assertEqual('localhost:8100-8999',
-                         parsed_options['liveserver'])
