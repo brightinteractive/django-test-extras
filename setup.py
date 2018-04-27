@@ -14,7 +14,7 @@ url = 'http://github.com/brightinteractive/django-test-extras/'
 author = 'Bright Interactive'
 author_email = 'admin@bright-interactive.co.uk'
 license = 'BSD'
-install_requires = ['Django>=1.8,<=1.9']
+install_requires = ['Django>=1.11,<=2.0']
 
 
 def get_version(package):
