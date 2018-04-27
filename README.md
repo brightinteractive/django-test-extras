@@ -8,7 +8,7 @@ Django Test Extras
 Adding to your Django Project
 =============================
 
-Requires Django 1.8.
+Requires Django 1.11.
 
 Add `test_extras` to your INSTALLED_APPS.
 

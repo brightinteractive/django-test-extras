@@ -158,11 +158,6 @@ class Command(CoreCommand):
     def _core_handle(self, TestRunner, *test_labels, **options):
         """ Copied from django.core.management.commands.test (1.4)"""
         options['verbosity'] = int(options.get('verbosity'))
-
-        if options.get('liveserver') is not None:
-            os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = options['liveserver']
-            del options['liveserver']
-
         test_runner = TestRunner(**options)
         failures = test_runner.run_tests(test_labels)
 

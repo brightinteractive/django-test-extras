@@ -50,6 +50,7 @@ class NonFlushingTransactionTestCaseMixin(object):
 
 
 class DataPreservingTransactionTestCaseMixin(NonFlushingTransactionTestCaseMixin):
+    serialized_rollback = True
     """
     Mixin that prevents the database from being flushed in TransactionTestCase
      subclasses and that saves the database contents before each test and
@@ -61,41 +62,3 @@ class DataPreservingTransactionTestCaseMixin(NonFlushingTransactionTestCaseMixin
     not like this:
        class MyTestCase(TransactionTestCase, DataPreservingTransactionTestCaseMixin):
     """
-
-    def __init__(self, *args, **kwargs):
-        super(DataPreservingTransactionTestCaseMixin, self).__init__(*args, **kwargs)
-        self.database_dumpfilepaths = {}
-
-    def setUp(self):
-        super(DataPreservingTransactionTestCaseMixin, self).setUp()
-
-        self.database_dumpfilepaths = {}
-
-        # If the test case has a multi_db=True flag, back up all databases.
-        # Otherwise, just use default.
-        # This mirrors TransactionTestCase's behaviour
-        if getattr(self, 'multi_db', False):
-            databases = connections
-        else:
-            databases = [DEFAULT_DB_ALIAS]
-        for db in databases:
-            with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as dumpfile:
-                call_command('dumpdata',
-                    verbosity=0, interactive=False,
-                    database=db, use_base_manager=True, format='json', stdout=dumpfile, exclude=self._get_unmanaged_models())
-            self.database_dumpfilepaths[db] = dumpfile.name
-
-    def _get_unmanaged_models(self):
-        from django.apps import apps
-        self.unmanaged_models = [m.__name__.lower() for m in apps.get_models() if not m._meta.managed]
-        return self.unmanaged_models
-
-    def __call__(self, *args, **kwargs):
-        super(DataPreservingTransactionTestCaseMixin, self).__call__(*args, **kwargs)
-
-        for (db, dumpfilepath) in self.database_dumpfilepaths.iteritems():
-            call_command('superflush', verbosity=0, interactive=False, database=db)
-            call_command('loaddata', dumpfilepath, verbosity=0, interactive=False)
-            os.remove(dumpfilepath)
-
-        self.database_dumpfilepaths = {}
