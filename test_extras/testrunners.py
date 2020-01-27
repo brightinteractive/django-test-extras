@@ -164,7 +164,7 @@ def get_coverage_files(app_labels, ignore_dirs, ignore_files):
 
     for app_label in app_labels:
         if app_label in settings.INSTALLED_APPS:
-            module = __import__(app_label, globals(), locals(), [''], -1)
+            module = __import__(app_label, globals(), locals(), [''], 0)
             dirname = os.path.dirname(module.__file__)
             files_for_coverage.extend(get_coverage_files_in_directory(dirname, ignore_dirs, ignore_files))
         else:

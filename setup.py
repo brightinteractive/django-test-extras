@@ -14,7 +14,7 @@ url = 'http://github.com/brightinteractive/django-test-extras/'
 author = 'Bright Interactive'
 author_email = 'admin@bright-interactive.co.uk'
 license = 'BSD'
-install_requires = ['Django>=1.11,<=2.0']
+install_requires = ['Django>=2.2.9,<=3.0']
 
 
 def get_version(package):
@@ -53,9 +53,9 @@ def get_package_data(package):
 if sys.argv[-1] == 'publish':
     os.system("python setup.py sdist upload")
     args = {'version': get_version(package)}
-    print "You probably want to also tag the version now:"
-    print "  git tag -a v%(version)s -m 'version %(version)s'" % args
-    print "  git push --tags"
+    print("You probably want to also tag the version now:")
+    print("  git tag -a v%(version)s -m 'version %(version)s'" % args)
+    print("  git push --tags")
     sys.exit()
 
 
