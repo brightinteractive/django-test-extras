@@ -2,7 +2,7 @@
 # (c) 2012 Bright Interactive Limited. All rights reserved.
 # http://www.bright-interactive.com | info@bright-interactive.com
 
-from StringIO import StringIO
+from io import StringIO
 from django.core import management
 from django.core import serializers
 from django.core.management import call_command

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 # (c) 2013 Bright Interactive Limited. All rights reserved.
 # http://www.bright-interactive.com | info@bright-interactive.com
 from django.test import TestCase, TransactionTestCase
@@ -12,6 +12,8 @@ from test_extras.testrunners import get_coverage_files
 
 
 class TestDataPreserving(DataPreservingTransactionTestCaseMixin, TransactionTestCase):
+    fixtures = ['painters.json']
+
     def test_migration_data_present_in_test_1(self):
         painter = Painter.objects.get(id=1)
         self.assertEqual('Pablo Picasso', painter.name)

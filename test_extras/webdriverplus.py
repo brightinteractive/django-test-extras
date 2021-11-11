@@ -20,7 +20,7 @@ WEBDRIVERPLUS_KWARGS: (optional) keyword arguments to pass to webdriverplus.WebD
         }
 """
 
-from __future__ import absolute_import
+
 
 from bs4 import BeautifulSoup
 from django.conf import settings

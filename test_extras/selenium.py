@@ -9,7 +9,7 @@ This is in a seperate file, not testcases.py, so that testcases.py doesn't
 have to depend on selenium.
 """
 
-from __future__ import absolute_import
+
 
 from django.conf import settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
