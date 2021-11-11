@@ -3,7 +3,7 @@
 # http://www.bright-interactive.com | info@bright-interactive.com
 
 from django.conf import settings
-from test_extras.testrunners import result_hook_wrap, CoverageTestSuiteWrapper, PdbTestSuiteMixin, XmlTestSuiteMixin, ProfileTestSuiteWrapper, TagTestSuiteMixin
+from test_extras.testrunners import result_hook_wrap, CoverageTestSuiteWrapper, XmlTestSuiteMixin, ProfileTestSuiteWrapper, TagTestSuiteMixin
 from django.core.management.commands.test import Command as CoreCommand
 
 import argparse
@@ -17,7 +17,6 @@ class Command(CoreCommand):
     except that it also adds support for:
 
     --coverage
-    --pdb
     --xmlreports
     --profile
     --tags
@@ -32,10 +31,6 @@ class Command(CoreCommand):
             dest='coverage', default=None,
             choices=['text', 'html', 'xml'],
             help='Coverage report; One of \'text\', \'html\', \'xml\''),
-        parser.add_argument(
-            '--pdb', action='store_true', dest='pdb',
-            default=False,
-            help='Drop into pdb on test failure.'),
         parser.add_argument(
             '-x', '--xmlreports', action='store_true',
             dest='xmlreports', default=False,
@@ -86,12 +81,6 @@ class Command(CoreCommand):
 
         TestRunner = result_hook_wrap(TestRunner)
 
-        if options['pdb'] and options['xmlreports']:
-            from optparse import OptionError
-            raise OptionError("--pdb, -x", "cannot have pdb and xmlreports specified")
-
-        if options['pdb']:
-            TestRunner = self.pdb_wrap(TestRunner)
 
         if options['xmlreports']:
             TestRunner = self.xml_wrap(TestRunner)
@@ -131,11 +120,6 @@ class Command(CoreCommand):
                 subject = Runner(*args, **kwargs)
                 super(CoverageTestSuiteRunner, self).__init__(subject, report_type, *args, **kwargs)
         return CoverageTestSuiteRunner
-
-    def pdb_wrap(self, Runner):
-        class PdbTestSuiteRunner(PdbTestSuiteMixin, Runner):
-            pass
-        return PdbTestSuiteRunner
 
     def xml_wrap(self, Runner):
         class XmlTestSuiteRunner(XmlTestSuiteMixin, Runner):
